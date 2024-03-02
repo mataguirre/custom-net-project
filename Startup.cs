@@ -1,7 +1,7 @@
-﻿using API.Definitions.Conventions;
+﻿using API.Application;
+using API.Definitions.Conventions;
 using API.Definitions.Repositories;
 using API.Domain;
-using API.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -20,20 +20,20 @@ namespace API
         {
             services.AddAuthorization();
             services.AddControllers();
-            services.AddDbContext<FitnessDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("Fitness_DB")));
+            services.AddDbContext<DbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("Default")));
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             services.AddScoped<FitnessDataSeedContributor>();
-            services.AddScoped<FitnessDbContext>();
+            services.AddScoped<EntityFrameworkCore.AppDbContext>();
             services.AddControllersWithViews(options =>
             {
                 options.Conventions.Add(new CustomControllerModelConvention());
             });
-            //services.AddAutoMapper(typeof(FitnessAutoMapperProfile));
+            services.AddAutoMapper(typeof(AppAutoMapperProfile));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -51,15 +51,6 @@ namespace API
             {
                 endpoints.MapControllers();
             });
-
-            Task.Run(async () =>
-            {
-                using (var serviceScope = app.ApplicationServices.CreateScope())
-                {
-                    var seedContributor = serviceScope.ServiceProvider.GetRequiredService<FitnessDataSeedContributor>();
-                    await seedContributor.SeedAsync();
-                }
-            }).Wait();
         }
     }
 }

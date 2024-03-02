@@ -4,7 +4,7 @@ namespace API.Definitions.Services
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FitnessAppService<TEntity> : ControllerBase
+    public class AppService<TEntity> : ControllerBase
     {
     }
 }

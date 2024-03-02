@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <Folder Include="Contracts\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Shared\" />
     <Folder Include="Shared\" />
   </ItemGroup>
 

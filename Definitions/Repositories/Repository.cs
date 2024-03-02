@@ -6,9 +6,9 @@ namespace API.Definitions.Repositories
 {
     public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
-        private readonly FitnessDbContext _context;
+        private readonly EntityFrameworkCore.AppDbContext _context;
 
-        public Repository(FitnessDbContext context)
+        public Repository(EntityFrameworkCore.AppDbContext context)
         {
             _context = context;
         }
@@ -31,24 +31,11 @@ namespace API.Definitions.Repositories
             return entity;
         }
 
-        public async Task<TEntity> UpdateAsync(TKey id, TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            if (!await EntityExists(id))
-            {
-                return null;
-            }
-
             _context.Entry(entity).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Handle concurrency exception if needed
-                throw;
-            }
+            await _context.SaveChangesAsync();
 
             return entity;
         }
@@ -75,15 +62,10 @@ namespace API.Definitions.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(TKey id)
+        public async Task<bool> DeleteAsync(TEntity entity)
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
-            if (entity == null)
-            {
-                return false;
-            }
-
             _context.Set<TEntity>().Remove(entity);
+            
             await _context.SaveChangesAsync();
 
             return true;

@@ -45,9 +45,9 @@ namespace API.Definitions.Services
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(TKey id, TEntity entity)
+        public async Task<IActionResult> UpdateAsync(TEntity entity)
         {
-            var updatedEntity = await _repository.UpdateAsync(id, entity);
+            var updatedEntity = await _repository.UpdateAsync(entity);
 
             if (updatedEntity == null)
             {
@@ -58,9 +58,9 @@ namespace API.Definitions.Services
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(TKey id)
+        public async Task<IActionResult> DeleteAsync(TEntity entity)
         {
-            var deleted = await _repository.DeleteAsync(id);
+            var deleted = await _repository.DeleteAsync(entity);
 
             if (!deleted)
             {

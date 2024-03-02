@@ -1,6 +1,6 @@
 ﻿namespace API.Application
 {
-    public class FitnessAutoMaperProfile
+    public class AppAutoMapperProfile
     {
     }
 }
